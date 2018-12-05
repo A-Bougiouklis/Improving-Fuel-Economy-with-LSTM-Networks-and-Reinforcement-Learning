@@ -1,0 +1,27 @@
+The LSTM NN consumption model uses elevation, E(n), and velocity, V(n),
+sequences as inputs. The output is the consumed phase current of the electric
+motor, I(n). For the hidden layers we chose LSTM units with a sigmoid activation
+function. Finally, the output layer is a fully connected node.
+The selected architecture has 50 LSTM nodes in the first layer and 35 LSTM
+nodes in the second. We concluded to this particular layout by examining all the
+combinations of nodes between 0 and 100 for a two layer NN. This architecture
+minimizes the mean square error of the training process.
+The data acquired from the telemetry system is first passed through a clean-
+ing process. In this stage, we remove data corresponding to negative phase cur-
+rent values. These are invalid elements as the vehicle does not have regenerative
+braking and the phase current is always positive. Also, zero latitude and longi-
+tude measurements are removed. The zero values correspond to loss of signal on
+the GPS sensor. At a 50Hz sampling rate the percentage of the removed values
+is signicantly smaller than the size of the training set and therefore we did not
+alter the sequence of the data.
+The inputs fed into the network are sequences of 300 elements each and the
+output is the sum of the consumed phase current from these measurements.
+The training process was conducted with a training data set of 658.500 mea-
+surements which correspond to 13 laps from the eco-marathon 2016 and 9 rounds
+from the eco-marathon 2017. The validation set consisted of 36.000 elements from
+1 lap on the 2017 track.
+The neural network was implemented with the KERAS library. We used the
+RMSprop optimizer and early stopping with the patience parameter set to 13
+epochs. Finally, the learning rate was set to 0.001. After training, the mean
+squared error was 0.3972.
+
