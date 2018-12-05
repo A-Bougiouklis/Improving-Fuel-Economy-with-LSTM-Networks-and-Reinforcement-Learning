@@ -1,0 +1,3 @@
+The preprocess_data_for_keras reads the input data from the telemetry, locally, and the fake produced data.
+I used fake data to simulate situations where the vehicle was not able to be in, such as velocities greater than 40km.
+The used vehicle is an experimental Light Electrical Vehicle with limited power.
