@@ -1,3 +1,10 @@
 These data were gathered from a prototype telemetry system during the Shell Eco Marathon London 2016 & 2017
-I have uploaded the smallest file in order to share the file stracture of the used file. 
+
+The vehicle is equipped with a telemetry system, which takes measurements of
+the phase current of the motor and a Global Positioning System (GPS) which
+calculates elevation, velocity, latitude and longitude of the vehicle. The sam-
+pling rate of the system is 50Hz. The gathered data is used to train the NN
+consumption model and the Q-Learning algorithms.
+
+I have uploaded the smallest file in order to share the file stracture of the used data. 
 If there is a need for all the train data please contact me: andreasbougiouklis@gmail.com
