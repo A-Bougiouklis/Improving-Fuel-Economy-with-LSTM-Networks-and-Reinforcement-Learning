@@ -1,6 +1,7 @@
     The preprocess_data_for_keras reads the input data from the telemetry, locally, and the fake produced data.
 I used fake data to simulate situations where the vehicle was not able to be in, such as velocities greater than 40km.
 The used vehicle is an experimental Light Electrical Vehicle with limited power.
+
     def read_lap_data(lap_txt): 
 Reads the telemetry data, "lap_txt". The correct file form is in the sub folder "Telemetry Data".
 It uses a series of "if" commands to keep only the usefull values, the inputs of the LSTM NN, and to 
