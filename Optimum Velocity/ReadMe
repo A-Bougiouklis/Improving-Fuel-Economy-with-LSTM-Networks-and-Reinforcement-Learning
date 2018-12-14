@@ -1,1 +1,48 @@
-a
+Methodology of Q-Learning
+
+
+Q-learning is one of the most used algorithms among other Reinforcement Learning (RL) techniques due to its model free nature.
+This technique mimics the human learning procedure and is able to accomplish an arbitrary task from experience gained by direct
+interaction with the environment. The “learner” is called as the agent. Everything that the agent interacts with, is called a state,
+where states represent situations of the environment and everything the agent do, is called an action, where actions represent the 
+choices of the agent.
+The knowledge obtained through the procedure of training, for every pair of state (s) and action (a), is called a Q-value (s,a)
+and for the purpose of this system it is saved in a table data structure, called as Q-Table. At the beginning of training this 
+table has been initialized with zeros. The control problems goal is to find all the pairs (s, a) which give
+the best overall reward to the agent. The sequence of those tuples (s,a) is called as the optimal policy of the problem.
+The optimal policy for every state is calculated as:
+
+              𝜋 (𝑠) = 𝑎𝑟𝑔𝑚𝑎𝑥 (𝑠,𝑎) 
+
+The Q-value associated with every (s,a) pair is updated every time the agent make a choice:
+
+        𝑄t(𝑠, 𝑎) = 𝑄t-1(𝑠, 𝑎) + l[𝑟 + 𝛾𝑚𝑎𝑥𝑄t-1(𝑠′,𝑎′) − 𝑄t-1(𝑠, 𝑎)]
+
+Here γ is a discount factor of value 0≤γ≤1, l is the learning rate of value 0≤α≤1, 𝑟 is the reward of the action and 𝑚𝑎𝑥𝑄t-1(𝑠′,𝑎′)
+is the maximum Q value of the state 𝑠′ which correspond to the state that the specific action α will lead to.
+The primary challenge of the agent arise when has to make a choice of action. The simplest selection strategy is called greedy 
+and assures that the agent at any given time choose the action with the highest Q-value in order to maximize the short-term reward.
+However the agent has to experiment with different combinations of action in order to discover the optimal policy.
+The solution to this problem is to balance the exploitation and the exploration by behaving most of the time greedily 
+while choosing a uniform random action with small a probability ɛ. This strategy is called as ε-greedy:
+
+        𝑠𝑒𝑙𝑒𝑐𝑡𝑖𝑜𝑛 𝑠𝑡𝑟𝑎𝑡𝑒𝑔𝑦 {𝑟𝑎𝑛𝑑𝑜𝑚 𝑐ℎ𝑜𝑖𝑠𝑒 𝑜𝑓 𝑎 𝑤𝑖𝑡ℎ 𝑝𝑟𝑜𝑏𝑎𝑏𝑖𝑙𝑖𝑡𝑦 𝑝𝑎𝑟𝑔𝑚𝑎𝑥𝑄(𝑠,𝑎) 𝑤𝑖𝑡ℎ 𝑝𝑟𝑜𝑝𝑎𝑏𝑖𝑙𝑖𝑡𝑦 1−𝑝
+
+The probability that I used is:
+
+       𝑝=𝑒−𝑛×𝜀 
+       
+Here n is the number of iterations executed from the algorithm and ε the exploration rate.
+
+
+Pseudo Code of Q-Learning Algorithm
+Input: set of states (s), set of actions (a), reward function (r)
+Input: discount factor (γ), learning rate (l), exploration rate (ε)
+Initialise: Q(s,α), polisy (π)
+Repeat:
+For each state:
+Choose an action (a) from the current state (s) based on ε
+Calculate the reward for the new action
+Update Q-Table
+π (s)=argmax Q(s,a)
+Until π(s) has converged
