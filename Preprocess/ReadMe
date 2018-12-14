@@ -1,3 +1,18 @@
 The preprocess_data_for_keras reads the input data from the telemetry, locally, and the fake produced data.
 I used fake data to simulate situations where the vehicle was not able to be in, such as velocities greater than 40km.
 The used vehicle is an experimental Light Electrical Vehicle with limited power.
+
+def read_lap_data(lap_txt): 
+Reads the telemetry data, "lap_txt". The correct file form is in the sub folder "Telemetry Data".
+It uses a series of "if" commands to keep only the usefull values, the inputs of the LSTM NN, and to 
+skip the invalid data. The invalid data are result of the GPS losing the signal.
+
+def make_sequences_of_n(v,iac,e,seq_len=300,test_size = 0.95):
+It takes as inputs the v=Velocity, iac=consumed AC current from the motor and e=elevation of the road which are the inputs of the 
+LSTM NN.
+Also the seq_len correspond to the length of the sequential input of the NN and the test_size to the size of the test set.
+Finally, This function makes a normilasion of the input data by dividing them.
+As outputs it returns the actual train and test sets.
+
+The Final output of the preprocess_data_for_keras is a Train set and a Test set ready to train a LSTM NN with a input of
+length = "seq_len".
