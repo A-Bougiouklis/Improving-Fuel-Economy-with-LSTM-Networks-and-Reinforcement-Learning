@@ -1,1 +1,61 @@
-a
+Velocity Optimization
+
+
+Q-Learning Algorithm Design
+
+
+The grade of the driving surface is the most important factor when deciding the
+fuel optimum velocity profile. Therefore to set the states of the environment
+I examined the elevation data from the GPS system. I made a segmentation
+in accordance with the monotony of the elevation. Every time the monotony
+changes I set a diferent state.
+According to my research a larger set of track slots does not lead
+to better results.
+The second step of the algorithm design involves the appropriate values of
+action, which correspond to the appropriate values of speed. All velocities that
+the agent is able to choose from have been described as follows:
+
+                v min < v < v max
+
+Where v min=10 km/h (2.778 m/s) and v max=45 km/h (12.5 m/s)
+The policy has been initialized with the desirable average velocity for every
+state. The other constants of the algorithm have been set to the following val-
+ues. The discount factor has been set to 0, as the reward from the next state is
+not afected from the taken action. Moreover, the learning rate has been set to
+0.7. Finally I assume that the policy has converged when it does not change
+for 2000 epochs.
+
+Reward Function
+
+The Reward function has the greatest impact on successfully training the agent.
+It consists of two important factors. Firstly, it evaluates if the desirable average
+speed is being maintained. Secondly, it evaluates whether the policy of the agent
+Improving Fuel Economy with LSTM Networks and Reinforcement Learning 5
+is an improvement on the consumption of the previous strategy. These are the
+two criteria that the algorithm has to meet.
+The time reward concerning the average velocity of the vehicle has been set to
+a constant. Specifcally, if the average speed is within the desirable margin then
+the reward is set to 0.5, otherwise it has the value of -0.5. To approximate the
+average velocity, the algorithm computes the weighted average from the length
+of each state (wi) and the corresponding velocity (vi).
+
+The desirable margin is (m-1, m+1), where m is the desirable average speed.
+To approximate the consumption of the vehicle for every velocity profile the
+NN described has been used. Every time the agent makes the choice to
+maintain a specific speed into the boundaries of a state, the NN calculates the
+consumed energy for the entire trip. Then, this approximation is being sub-
+tracted from the policys consumption. Finally, the result from the subtraction
+is multiplied by a discount factor k. I used this discount factor to keep the
+balance between the two rewards. To set the optimum value for the parameter
+k I conducted a statistical analysis of the used data. I discovered that the
+expected value of the subtraction between the policy consumption and the new
+approximation (d) was:
+
+E[d] = 32:369
+
+Thus, in order to balance these two amounts I set the value of k as 0.02.
+With this specific setting the expected value of the consumption reward is:
+k x E[d] = 0:647
+
+That means there is balance between the two rewards. The final reward is
+equal to the sum of the time reward and the consumption reward.
