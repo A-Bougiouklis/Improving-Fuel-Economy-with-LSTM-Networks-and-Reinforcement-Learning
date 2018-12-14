@@ -59,3 +59,23 @@ k x E[d] = 0:647
 
 That means there is balance between the two rewards. The final reward is
 equal to the sum of the time reward and the consumption reward.
+
+
+Action Selection Strategy
+
+
+The primary challenge is choosing the agent's action. I used the E-greedy
+strategy to balance the exploitation and the exploration by behaving most of the
+time greedily, while choosing a uniform random action with a small probability p.
+
+selectionstrategy =(random choise of action with probability p) or argmax a2A Q(s,a) with propability 1-p
+
+The probability that is used is:
+
+p = e^(-nxε)
+
+An initial analysis has been conducted to establish the most suitable explo-
+ration rate. To test the decaying setting, the value of ε as in the previous equation had
+been set to have a varying rate at 0.001, 0.0001, and 0.00001. For the gradually
+decreasing exploration method the value of ε = 0.0001 has been selected for this
+study as it provides the best performance over other values.
