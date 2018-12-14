@@ -30,11 +30,11 @@ def read_lap_data(lap_txt):
 	speed = []
 	iac = []
 
-	flag = True														#gia na shmeiwnw otan lat or long = 0, kai na mh ta lambanw ypopsi
-	for index in lap_data:											#dioti tote trwei kolhmata to gps
-		if ((count == 9) and (index!=0)):							#xwrizw se listes tis eisodous
-			latitude += list([index])								#index != 0 giati exw kapoia sfalmata logo thlemetrias
-		elif ((count==9) and (index == 0)):							#index = 0 prosperase ola ta stoixeia
+	flag = True	#The flag indicates if the GPS data are corrupted										
+	for index in lap_data:											
+		if ((count == 9) and (index!=0)):	#index!=0 to avoid temetry corrupted data
+			latitude += list([index])	
+		elif ((count==9) and (index == 0)):	#index=0 pass the whole line
 			flag = False
 		elif((count == 10) and flag):
 			longitude += list([index])
@@ -45,7 +45,7 @@ def read_lap_data(lap_txt):
 		elif((count==21) and flag):
 			iac += list([index])
 			count = 0
-		elif((count==21) and(flag==False)):							#paw sthn epomenh tetrada dedomenwn
+		elif((count==21) and(flag==False)):	#go the next usefull data
 			flag = True
 			count = 0
 		count+=1
@@ -55,15 +55,15 @@ def read_lap_data(lap_txt):
 def make_slots(Elevation):
 	
 	'''
-	slope = 1 --> meiwsh Elevation
-	slope = 0 --> auksish Elevation
+	slope = 1 --> decrease Elevation
+	slope = 0 --> increase Elevation
 	'''
 
 	slope = 0
 	previous_p = 0
-	margin_of_error = 2		#allazontas auta ta dyo meiwneis kai megalwneis ton arithmo twn slots
+	margin_of_error = 2		#these variables changes the total number of slots
 	acceptable_error = margin_of_error
-	gradient= [0] 			#orizw me 0 ean to prwto slot einai anifora kai me 1 ean einai katifora, thewrw to prwto slot anifora
+	gradient= [0] 			# 0 if the first slot is an uphill - 1 if it is downhill
 
 	begin_of_slot = []
 
@@ -128,8 +128,8 @@ def make_velocities_Iac_acceleration_deceleration(begin_of_slot, gradient,max_sp
 
 		while (previous_slot<slot_stop):
 			
-			if (gradient[gradient_count]==0):	#se periptwsh aniforas
-				if (hz_count==0):				#wra na parw metrhsh
+			if (gradient[gradient_count]==0):	#in case of uphill
+				if (hz_count==0):				
 					if (current_speed<max_speed):
 						current_speed+=1
 					speed.append(current_speed)
@@ -145,8 +145,8 @@ def make_velocities_Iac_acceleration_deceleration(begin_of_slot, gradient,max_sp
 					else:
 						iac.append(100)
 					hz_count-=1
-			else:								#se periptwsh katiforas
-				if (hz_count==1):				#wra na parw metrhsh
+			else:							#in case of downhill
+				if (hz_count==1):				
 					if (current_speed>min_speed):
 						current_speed-=1
 					speed.append(current_speed)
@@ -178,8 +178,8 @@ def make_velocities_Iac_acceleration_deceleration_in_favor_of_downhill(begin_of_
 
 		while (previous_slot<slot_stop):
 			
-			if (gradient[gradient_count]==0):	#se periptwsh aniforas
-				if (hz_count==0):				#wra na parw metrhsh
+			if (gradient[gradient_count]==0):	
+				if (hz_count==0):				
 					if (current_speed>min_speed):
 						current_speed-=1
 					speed.append(current_speed)
@@ -189,8 +189,8 @@ def make_velocities_Iac_acceleration_deceleration_in_favor_of_downhill(begin_of_
 					speed.append(current_speed)
 					iac.append(2)
 					hz_count-=1
-			else:								#se periptwsh katiforas
-				if (hz_count==1):				#wra na parw metrhsh
+			else:								
+				if (hz_count==1):				
 					if (current_speed<max_speed):
 						current_speed+=1
 					speed.append(current_speed)
@@ -221,10 +221,10 @@ def make_velocities_Iac_costant_speed(begin_of_slot, gradient,current_speed=45):
 
 		while (previous_slot<slot_stop):
 			
-			if (gradient[gradient_count]==0):	#se periptwsh aniforas
-				if (hz_count==0):				#wra na parw metrhsh
+			if (gradient[gradient_count]==0):	
+				if (hz_count==0):				
 					speed.append(current_speed)
-					if (slot_counter==3):		#the third slot has a huge slope
+					if (slot_counter==3):		
 						iac.append(100)
 					else:
 						iac.append(40)
@@ -236,8 +236,8 @@ def make_velocities_Iac_costant_speed(begin_of_slot, gradient,current_speed=45):
 					else:
 						iac.append(40)
 					hz_count-=1
-			else:								#se periptwsh katiforas
-				if (hz_count==1):				#wra na parw metrhsh
+			else:								
+				if (hz_count==1):				
 					speed.append(current_speed)
 					iac.append(0)
 					hz_count=49
@@ -268,9 +268,9 @@ def make_velocities_Iac_costant_speed_only_in_steep_slope(begin_of_slot, gradien
 
 		while (previous_slot<slot_stop):
 			
-			if (gradient[gradient_count]==0):	#se periptwsh aniforas
-				if (hz_count==0):				#wra na parw metrhsh
-					if (slot_counter==3):		#the third slot has a huge slope
+			if (gradient[gradient_count]==0):	
+				if (hz_count==0):				
+					if (slot_counter==3):		
 						iac.append(200)
 						speed.append(current_speed)
 						elevation.append(track_elevation[element_counter])
@@ -281,8 +281,8 @@ def make_velocities_Iac_costant_speed_only_in_steep_slope(begin_of_slot, gradien
 						iac.append(200)
 						elevation.append(track_elevation[element_counter])
 					hz_count-=1
-			else:								#se periptwsh katiforas
-				if (hz_count==1):				#wra na parw metrhsh
+			else:								
+				if (hz_count==1):				
 					hz_count=49
 				else:
 					hz_count-=1	
@@ -310,9 +310,9 @@ def make_velocities_Iac_small_costant_speed_only_in_steep_slope(begin_of_slot, g
 
 		while (previous_slot<slot_stop):
 			
-			if (gradient[gradient_count]==0):	#se periptwsh aniforas
-				if (hz_count==0):				#wra na parw metrhsh
-					if (slot_counter==3):		#the third slot has a huge slope
+			if (gradient[gradient_count]==0):	
+				if (hz_count==0):				
+					if (slot_counter==3):		
 						iac.append(5)
 						speed.append(current_speed)
 						elevation.append(track_elevation[element_counter])
@@ -323,8 +323,8 @@ def make_velocities_Iac_small_costant_speed_only_in_steep_slope(begin_of_slot, g
 						iac.append(5)
 						elevation.append(track_elevation[element_counter])
 					hz_count-=1
-			else:								#se periptwsh katiforas
-				if (hz_count==1):				#wra na parw metrhsh
+			else:								
+				if (hz_count==1):				
 					hz_count=49
 				else:
 					hz_count-=1	
