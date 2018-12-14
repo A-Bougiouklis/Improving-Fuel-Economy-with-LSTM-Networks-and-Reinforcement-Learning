@@ -338,7 +338,7 @@ if __name__ == '__main__':
 
 	print("Reading...")
 
-	elevation, latitude, longitude = read_lap_data('/home/andreas/Desktop/IECC/Data Analysis/SEM 2016/Telemetry Data/Blown tire.txt')
+	elevation, latitude, longitude = read_lap_data('Telemetry_Data.txt')
 
 	#delete first 3000 elements, they are error
 	elevation = elevation[3000:]
