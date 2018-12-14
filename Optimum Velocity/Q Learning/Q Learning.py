@@ -19,12 +19,12 @@ warnings.filterwarnings("ignore") #Hide messy Numpy warnings
 
 learnig_rate = 0.7
 epochs = 100000
-discount_factor = 0	#Einai to idio na parw reward eite twra eite se epomeno state
+discount_factor = 0	#There is no diffrent in this situation to take now the reward or in the future
 disarable_average_speed = 31
 speed_margin = 	1		# avg_speed-speed_margin <= final_avg_speed <= avg_speed+speed_margin
 max_velocity = 45
 min_velocity = 10			
-early_stop_patience = 2000	#pollaplasio tou 10!
+early_stop_patience = 2000	# mod 10 == 0
 
 with open('End_Of_Each_Slot', 'rb') as fp:
 	end_of_slot = pickle.load(fp)
@@ -76,13 +76,13 @@ def Modify_Lap_Data(lap_data,local_policy):
 
 		for sequence_element in range(len(velocity)):
 
-			velocity[sequence_element]= local_policy[state]/100	#eisagw th taxhthta tou policy kai frontizw na einai ~1
+			velocity[sequence_element]= local_policy[state]/100	#the velocity had to be ~1
 			
 			plt_vel += list([local_policy[state]])
 			plt_elevation+= list([el[sequence_element]*100])
 
 			element_counter+=1
-			if(element_counter==end_of_slot[state]):			#the elements are in a row and thats how I know in which state they belong
+			if(element_counter==end_of_slot[state]):	#the elements are in a row and thats how I know in which state they belong
 				state+=1
 
 		new_lap_data[data_counter][0] = list(velocity)		#restore the correct values
@@ -114,7 +114,7 @@ def Find_the_largest_q_value(state):
 	counter = 0
 
 	for q_value in state:
-		if (q_value>maximum_q_value):	#tha exei th tash na epilegei mikroteres taxhthtes
+		if (q_value>maximum_q_value):	#it has the tense to choose smaller velocities 
 			maximum_q_value = q_value
 			position_max_q_value = counter
 		counter+=1
@@ -138,7 +138,7 @@ def Select_Action(state,n):
 		action = Find_the_largest_q_value(state)
 	else:
 		velocity = random.randint(min_velocity,max_velocity)
-		action = velocity-min_velocity 				#h thesh ths taxythtas sto q_table
+		action = velocity-min_velocity 				#the velocity position in the q_table
 
 	return(action)
 
@@ -178,7 +178,7 @@ def Calculate_time_Reward(local_policy):
 
 	avg_speed = Calculate_Average_Speed(local_policy)
 
-	if ((avg_speed > (disarable_average_speed+speed_margin)) or (avg_speed < (disarable_average_speed-speed_margin))):	#ektos oriwn
+	if ((avg_speed > (disarable_average_speed+speed_margin)) or (avg_speed < (disarable_average_speed-speed_margin))):	#out of borders
 		#print('-')
 		return (-0.5)
 	else:
@@ -303,7 +303,6 @@ if __name__ == '__main__':
 	plt.xlabel('Time 50 x sec')
 	plt.ylabel('Velocity km/h')
 	plt.show()
-	#print(Calculate_Average_Speed(list([24,31,11,12,22,17,27,31,28,29,30,34,29,21])))
 	
 	policy_final = Q_Algorithm(epochs,q_table)
 	print("'Optimum_Velocities --->	",policy_final)
