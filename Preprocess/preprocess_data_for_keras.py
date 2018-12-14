@@ -12,11 +12,8 @@ from scipy import signal
 from math import factorial
 
 lemmatizer = WordNetLemmatizer()
-hm_lines = 6000000								#prosoxh otan yperbei to 100000
+hm_lines = 6000000	#it can not over pass 100000
 
-'''
-sequences twn 100 opws sumbainoun sth pragmatikotita xwris na ta xwrisw se slots
-'''
 
 def read_lap_data(lap_txt):
 	lap_data = []
@@ -34,11 +31,11 @@ def read_lap_data(lap_txt):
 	speed = []
 	iac = []
 
-	flag = True														#gia na shmeiwnw otan lat or long = 0, kai na mh ta lambanw ypopsi
-	for index in lap_data:											#dioti tote trwei kolhmata to gps
-		if ((count == 9) and (index!=0)):							#xwrizw se listes tis eisodous
-			latitude += list([index])								#index != 0 giati exw kapoia sfalmata logo thlemetrias
-		elif ((count==9) and (index == 0)):							#index = 0 prosperase ola ta stoixeia
+	flag = True	#The flag indicates if the GPS data are corrupted				
+	for index in lap_data:									
+		if ((count == 9) and (index!=0)):	#index!=0 to avoid temetry corrupted data							#xwrizw se listes tis eisodous
+			latitude += list([index])						
+		elif ((count==9) and (index == 0)):	#index=0 pass the whole line						
 			flag = False
 		elif((count == 10) and flag):
 			longitude += list([index])
@@ -49,7 +46,7 @@ def read_lap_data(lap_txt):
 		elif((count==21) and flag):
 			iac += list([index])
 			count = 0
-		elif((count==21) and(flag==False)):							#paw sthn epomenh tetrada dedomenwn
+		elif((count==21) and(flag==False)):	#go the next usefull data							
 			flag = True
 			count = 0
 		count+=1
@@ -67,7 +64,7 @@ def make_sequences_of_n(v,iac,e,seq_len=300,test_size = 0.95):
 	e_row = []
 	i_row = 0
 
-	for i in range(len(v)):		#tha fitaksw minimum_len dekades
+	for i in range(len(v)):		# len >=10
 
 		if (sequence_counter==seq_len):
 			
@@ -80,9 +77,9 @@ def make_sequences_of_n(v,iac,e,seq_len=300,test_size = 0.95):
 			i_row = 0
 			sequence_counter = 0
 							
-		v_row.append(v[i]/100)		#~1	append to stoixeio 		
+		v_row.append(v[i]/100)		#~1 append th elemnt 		
 		i_row+=  iac[i]/10000		#~1
-		e_row.append(e[i]/100)		#to ypsometro
+		e_row.append(e[i]/100)		#to elevation
 		
 		sequence_counter+=1
 
@@ -120,18 +117,18 @@ if __name__ == '__main__':
 	speed=list(fake_speed_acceleration)
 	iac=list(fake_iac_acceleration)
 	
-	temp_elevation, temp_speed, temp_iac = read_lap_data('/IECC/Data Analysis/SEM 2016/Telemetry Data/3rd_test_30_6_2016.txt')
+	temp_elevation, temp_speed, temp_iac = read_lap_data('Telemetry_Data1.txt')
 	elevation+=list(temp_elevation)
 	speed+=list(temp_speed)
 	iac+=list(temp_iac)
 	
-	temp_elevation, temp_speed, temp_iac = read_lap_data('/IECC/Data Analysis/SEM 2016/Telemetry Data/Blown tire.txt')
+	temp_elevation, temp_speed, temp_iac = read_lap_data('Telemetry_Data2.txt')
 	elevation+=list(temp_elevation)
 	speed+=list(temp_speed)
 	iac+=list(temp_iac)
 	
 	
-	temp_elevation, temp_speed, temp_iac = read_lap_data('/IECC/Data Analysis/SEM 2017/24_5_2017.txt')
+	temp_elevation, temp_speed, temp_iac = read_lap_data('Telemetry_Data3.txt')
 	elevation+=list(temp_elevation)
 	speed+=list(temp_speed)
 	iac+=list(temp_iac)
@@ -147,12 +144,12 @@ if __name__ == '__main__':
 	speed+=list(fake_speed_constant_speed)
 	iac+=list(fake_iac_constant_speed)
 	
-	temp_elevation, temp_speed, temp_iac = read_lap_data('/IECC/Data Analysis/SEM 2017/27_5_2017.txt')
+	temp_elevation, temp_speed, temp_iac = read_lap_data('Telemetry_Data4.txt')
 	elevation+=list(temp_elevation)
 	speed+=list(temp_speed)
 	iac+=list(temp_iac)
 	
-	temp_elevation, temp_speed, temp_iac = read_lap_data('/IECC/Data Analysis/SEM 2016/Telemetry Data/2nd_test_30_6_2016.txt')
+	temp_elevation, temp_speed, temp_iac = read_lap_data('Telemetry_Data5.txt')
 	elevation+=list(temp_elevation)
 	speed+=list(temp_speed)
 	iac+=list(temp_iac)
