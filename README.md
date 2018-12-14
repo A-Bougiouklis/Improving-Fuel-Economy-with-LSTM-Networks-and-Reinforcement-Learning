@@ -12,3 +12,14 @@ in order to minimize the consumption. This system was installed on a light
 electric vehicle (LEV) and by adopting the suggested driving strategy
 we reduced its consumption by 24.03% with respect to the classic 
 constant-speed control technique.
+
+The LSTM has been made by using the Keras Python3 package with TensorFlow
+as a backend.
+
+The correct way of studing the project is the following.
+1) Preprocess
+2) LSTM Neural Network
+3) Optimum Velocity
+4) Calculating The Racing Line
+
+I have put into every folder a short documentation of the idea and the code.
