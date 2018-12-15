@@ -46,3 +46,12 @@ Calculate the reward for the new action
 Update Q-Table
 π (s)=argmax Q(s,a)
 Until π(s) has converged
+
+
+Results
+
+The chosen optimum velocity profile for the track of figure "The Orange line is the elevation and the blue line the chosen 
+velocity profile.PNG" with a desirable average speed of 25 km/h. The actual average velocity of the profile is 25.975 km/h.
+
+"Velocity Profiles with different average speeds.PNG" Velocity profiles with difeerent average speeds of 24.8, 25.9, 27.1, 28.7, 
+29.8 km/h, the same strategy is being used for various trip times.
