@@ -1,4 +1,4 @@
-The Preprocess_Track_Data. py uses functions which are explained in the preprocess for the NN. 
+The "Find Truck Slots.py" uses functions which are explained in the preprocess for the NN. 
 Here the program keeps only one lap and then organize the data in the correct structure in order to be used for the NN. 
-Also, it finds the end of each slot, the end of each state of the environment.
-The data are used after in the Q-Learning algorithm in order to approximate the optimal velocities for the vehicle. 
+Also, it finds the states of the agent's enviroment and it saves the end of each state.
+The data are used in the Q-Learning algorithm in order to approximate the optimal velocities for the vehicle to minimize consumption.
