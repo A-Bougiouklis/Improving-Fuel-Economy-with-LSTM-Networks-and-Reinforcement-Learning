@@ -31,11 +31,11 @@ def read_lap_data(lap_txt):
 	speed = []
 	iac = []
 
-	flag = True														#gia na shmeiwnw otan lat or long = 0, kai na mh ta lambanw ypopsi
-	for index in lap_data:											#dioti tote trwei kolhmata to gps
-		if ((count == 9) and (index!=0)):							#xwrizw se listes tis eisodous
-			latitude += list([index])								#index != 0 giati exw kapoia sfalmata logo thlemetrias
-		elif ((count==9) and (index == 0)):							#index = 0 prosperase ola ta stoixeia
+	flag = True	#The flag indicates if the GPS data are corrupted				
+	for index in lap_data:									
+		if ((count == 9) and (index!=0)):	#index!=0 to avoid temetry corrupted data							#xwrizw se listes tis eisodous
+			latitude += list([index])						
+		elif ((count==9) and (index == 0)):	#index=0 pass the whole line						
 			flag = False
 		elif((count == 10) and flag):
 			longitude += list([index])
@@ -46,25 +46,73 @@ def read_lap_data(lap_txt):
 		elif((count==21) and flag):
 			iac += list([index])
 			count = 0
-		elif((count==21) and(flag==False)):							#paw sthn epomenh tetrada dedomenwn
+		elif((count==21) and(flag==False)):	#go the next usefull data							
 			flag = True
 			count = 0
 		count+=1
 		
-	return(elevation, speed, iac, latitude, longitude)
+	return(elevation, speed, iac)
+
+def make_sequences_of_n(v,iac,e,seq_len=300,test_size = 1):
+
+	Velocity = []
+	I = []
+	Elevation = []
+	sequence_counter = 0
+
+	v_row = []
+	e_row = []
+	i_row = 0
+
+	for i in range(len(v)):		# len >=10
+
+		if (sequence_counter==seq_len):
+			
+			Velocity.append(v_row)
+			Elevation.append(e_row)
+			I.append([i_row])
+
+			v_row = []
+			e_row = []
+			i_row = 0
+			sequence_counter = 0
+							
+		v_row.append(v[i]/100)		#~1 append th elemnt 		
+		i_row+=  iac[i]/10000		#~1
+		e_row.append(e[i]/100)		#to elevation
+		
+		sequence_counter+=1
+
+	testing_size = int(test_size*len(I))
+	
+	train_X = []
+	train_Y = []
+
+	test_X = []
+	test_Y = []
+
+	for i in range(len(I)-1):
+		if (i<testing_size):
+			train_X.append([Velocity[i],Elevation[i]])
+			train_Y.append(I[i])
+		else:
+			test_X.append([Velocity[i],Elevation[i]])
+			test_Y.append(I[i])
+	
+	return train_X,train_Y,test_X,test_Y	
 
 def make_slots(Elevation):
 	
 	'''
-	slope = 1 --> meiwsh Elevation
-	slope = 0 --> auksish elevationn
+	slope = 1 --> decrease Elevation
+	slope = 0 --> increase elevationn
 	'''
 
 	slope = 0
 	previous_p = 0
-	margin_of_error = 5		#allazontas auta ta dyo meiwneis kai megalwneis ton arithmo twn slots
+	margin_of_error = 5		#these variables changes the total number of slots
 	acceptable_error = margin_of_error
-	gradient= [0] 			#orizw me 0 ean to prwto slot einai anifora kai me 1 ean einai katifora, thewrw to prwto slot anifora
+	gradient= [0] 			#these variables changes the total number of slots
 
 	begin_of_slot = []
 
@@ -103,7 +151,7 @@ def make_slots(Elevation):
 
 	final_slots = []
 	previous_begin_of_slot = 0
-	for i in begin_of_slot:	#Ean to mhkos tou slot einai mikro diegrapse to
+	for i in begin_of_slot:	#If the slot is too small, delete it
 		if (abs(i - previous_begin_of_slot) > 6):
 			final_slots.append(i)		
 		previous_begin_of_slot = i
@@ -111,53 +159,6 @@ def make_slots(Elevation):
 	l = len(final_slots)
 	return final_slots,gradient
 
-def make_sequences_of_n(v,iac,e,seq_len=300,test_size = 1):
-
-	Velocity = []
-	I = []
-	Elevation = []
-	sequence_counter = 0
-
-	v_row = []
-	e_row = []
-	i_row = 0
-
-	for i in range(len(v)):		#tha fitaksw minimum_len dekades
-
-		if (sequence_counter==seq_len):
-			
-			Velocity.append(v_row)
-			Elevation.append(e_row)
-			I.append([i_row])
-
-			v_row = []
-			e_row = []
-			i_row = 0
-			sequence_counter = 0
-							
-		v_row.append(v[i]/100)		#~1	append to stoixeio 		
-		i_row+=  iac[i]/10000		#~1
-		e_row.append(e[i]/100)		#to ypsometro
-		
-		sequence_counter+=1
-
-	testing_size = int(test_size*len(I))
-	
-	train_X = []
-	train_Y = []
-
-	test_X = []
-	test_Y = []
-
-	for i in range(len(I)-1):
-		if (i<testing_size):
-			train_X.append([Velocity[i],Elevation[i]])
-			train_Y.append(I[i])
-		else:
-			test_X.append([Velocity[i],Elevation[i]])
-			test_Y.append(I[i])
-	
-	return train_X,train_Y,test_X,test_Y	
 
 if __name__ == '__main__':
 
