@@ -1,9 +1,9 @@
-The presented system has been installed on the Light Electrical Vehicle. To
-test the results of the system and the behavior of the driver when the system
-is running we conducted the following experiment during the Europe Shell Eco
-Marathon event 2017. First, we asked the driver to maintain a constant velocity
-on the closed track mentioned above, which is 1.7 kilometers in length, as a
-regular cruise control system would do. Second, we used the suggested system
-and the driver tried to follow the optimum trajectory while driving with the
-same desired average velocity. The experiment showed that by adopting the suggested driving
+The presented system has been installed on the Light Electrical Vehicle. To test the results of the system and the behavior of the 
+driver when the system is running we conducted the following experiment during the Europe Shell Eco Marathon event 2017.
+First, we asked the driver to maintain a constant velocity on the closed track mentioned above, which is 1.7 kilometers in length, as a
+regular cruise control system would do. Second, we used the suggested system and the driver tried to follow the optimum 
+trajectory while driving with the same desired average velocity. The experiment showed that by adopting the suggested driving
 strategy the total consumption was reduced by 24.03%.
+
+Graph 1 shows the generated power from the engine of the LEV when the driver maintains a constant velocity of 25km/h in the testing track.
+Graph 2 shows the generated power when the driver uses the system with the chosen velocity profile and the chosen racing line.
