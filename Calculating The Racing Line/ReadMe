@@ -1,1 +1,53 @@
-a
+Besides engine dynamics, the maximum velocity of a vehicle depends on
+the radius of the circle which is tangent to the trajectory of the vehicle. To
+approximate the racing line I calculate the trajectory that maximizes the radius
+of the tangent circle.
+
+Algorithm Design
+
+The trajectory has been represented by points of the track. Each element of the
+trajectory is a state of the environment.
+The agent is able to move each point across the width of the track. The
+average width of this specific route is 6 meters and I have set the movement step
+to 1 meter. All the calculations were conducted with the latitude and longitude
+coordinates.
+The policy has been initialized with the trajectory which corresponds to the
+middle of the track. I set the discount factor to 0, the learning rate to 0.001
+and I assumed that the policy has converged when it does not change for 10000
+epochs.
+
+
+Reward Function
+
+The goal of the agent is to approximate the trajectory of
+the vehicle which maximizes the radius of the tangent circle. For the purpose
+of this study every circle is tangent to three elements of the trajectory (A, B
+and C). In order to calculate the radius, firstly, I approximate the two lines
+which connect these elements. Secondly, I approximate the common point of
+their mediators (M). Finally, I measure the distance between A and M, this
+measurement is the radius of the tangent circle of the trajectory.
+
+In every iteration one point Pi of the trajectory is moved and the radii of
+three tangent circles is calculated. Every circle is tangent to three successive
+points. The FIrst circle (a) is tangent to the point being moved and the two
+previous points on the trajectory (Pi-1, Pi-2), the second one (b) to Pi and two
+points ahead (Pi+1, Pi+2) and the third one (c) to Pi-1, Pi, Pi+1. The reward
+is equal to the sum of the radial diferences from the policy of the agent and the
+new action.
+
+r = (ra - rpolicya ) x i + (rb + rpolicyb ) x j + (rc + rpolicyc ) x k
+
+Where ra, rb, rc correspond to the radiuses of the new trajectory and the
+rpolicya , rpolicyb , rpolicyc to the policys trajectory. Furthermore, the i, j, k are
+constant parameters the value of which has been set to i =1, j = 0.1 and k = 0.1.
+These values have been optimized for this particular track and they were
+the result of experimentation in the range [0,1].
+
+Action Selection Strategy
+
+
+An initial analysis has been conducted to establish the most suitable exploration
+rate for the ε in ε-greedy strategy. The value of ε has been set
+to have a varying rate at 0.01, 0.001, 0.0001, and 0.00001.
+For the gradually decreasing exploration method the value of ε = 0.001 has
+been selected for this study as it provides the best performance over other values.
