@@ -31,11 +31,11 @@ def read_lap_data(lap_txt):
 	speed = []
 	iac = []
 
-	flag = True														#gia na shmeiwnw otan lat or long = 0, kai na mh ta lambanw ypopsi
-	for index in lap_data:											#dioti tote trwei kolhmata to gps
-		if ((count == 9) and (index!=0)):							#xwrizw se listes tis eisodous
-			latitude += list([index])								#index != 0 giati exw kapoia sfalmata logo thlemetrias
-		elif ((count==9) and (index == 0)):							#index = 0 prosperase ola ta stoixeia
+	flag = True	#The flag indicates if the GPS data are corrupted				
+	for index in lap_data:									
+		if ((count == 9) and (index!=0)):	#index!=0 to avoid temetry corrupted data							#xwrizw se listes tis eisodous
+			latitude += list([index])						
+		elif ((count==9) and (index == 0)):	#index=0 pass the whole line						
 			flag = False
 		elif((count == 10) and flag):
 			longitude += list([index])
@@ -46,25 +46,25 @@ def read_lap_data(lap_txt):
 		elif((count==21) and flag):
 			iac += list([index])
 			count = 0
-		elif((count==21) and(flag==False)):							#paw sthn epomenh tetrada dedomenwn
+		elif((count==21) and(flag==False)):	#go the next usefull data							
 			flag = True
 			count = 0
 		count+=1
 		
-	return(elevation, speed, iac, latitude, longitude)
+	return(elevation, speed, iac)
 
 def make_slots(Elevation):
 	
 	'''
-	slope = 1 --> meiwsh Elevation
-	slope = 0 --> auksish elevationn
+	slope = 1 --> decrease Elevation
+	slope = 0 --> increase Elevation
 	'''
 
 	slope = 0
 	previous_p = 0
-	margin_of_error = 5		#allazontas auta ta dyo meiwneis kai megalwneis ton arithmo twn slots
+	margin_of_error = 2		#these variables changes the total number of slots
 	acceptable_error = margin_of_error
-	gradient= [0] 			#orizw me 0 ean to prwto slot einai anifora kai me 1 ean einai katifora, thewrw to prwto slot anifora
+	gradient= [0] 			# 0 if the first slot is an uphill - 1 if it is downhill
 
 	begin_of_slot = []
 
@@ -109,6 +109,7 @@ def make_slots(Elevation):
 		previous_begin_of_slot = i
 
 	l = len(final_slots)
+	print('number of slots:', l)
 	return final_slots,gradient
 
 def make_sequences_of_n(v,iac,e,seq_len=300,test_size = 1):
@@ -122,7 +123,7 @@ def make_sequences_of_n(v,iac,e,seq_len=300,test_size = 1):
 	e_row = []
 	i_row = 0
 
-	for i in range(len(v)):		#tha fitaksw minimum_len dekades
+	for i in range(len(v)):		
 
 		if (sequence_counter==seq_len):
 			
@@ -135,9 +136,9 @@ def make_sequences_of_n(v,iac,e,seq_len=300,test_size = 1):
 			i_row = 0
 			sequence_counter = 0
 							
-		v_row.append(v[i]/100)		#~1	append to stoixeio 		
+		v_row.append(v[i]/100)		#~1 		
 		i_row+=  iac[i]/10000		#~1
-		e_row.append(e[i]/100)		#to ypsometro
+		e_row.append(e[i]/100)		#to elevation
 		
 		sequence_counter+=1
 
